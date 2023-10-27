@@ -43,3 +43,5 @@ La función podría no estar encontrando correctamente la palabra dentro de las 
 Podría haber un problema con la entrada del usuario, como el título del libro o la palabra a buscar.
 Soluciones Potenciales
 Para ambos problemas, considera revisar y depurar cuidadosamente cada parte de las funciones, asegurándote de que cada componente (como la lectura de archivos, la tokenización de palabras, el cálculo de relevancia, etc.) esté funcionando correctamente. También podrías considerar agregar más mensajes de error o de debug para ayudarte a identificar dónde podrían estar ocurriendo los problemas.
+
+este trabajo fue realizado de manera individual, como fui solo en este trabajo me calificaria con un 6.0 ya que aunque en el programa no funcionaron todas las opciones, la gran mayoria si lo hacen.
