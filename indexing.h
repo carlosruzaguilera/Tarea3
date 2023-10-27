@@ -8,5 +8,6 @@ void load_document(const char *file_path);
 void load_all_documents(const char *directory_path);
 void display_documents();
 void clean_indexing();
+void display_documents_wrapper();
 
 #endif // INDEXING_H
