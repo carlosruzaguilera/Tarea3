@@ -1,6 +1,7 @@
 #include "bst.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 TreeNode* insert(TreeNode *root, Document doc) {
     if (root == NULL) {
@@ -11,6 +12,7 @@ TreeNode* insert(TreeNode *root, Document doc) {
         }
         new_node->doc = doc;
         new_node->left = new_node->right = NULL;
+        printf("Nuevo nodo creado para el documento: %s\n", doc.title);  // Agrega esta línea para depuración
         return new_node;
     }
 

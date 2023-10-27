@@ -14,11 +14,17 @@ void initialize_indexing() {
     global_bst = createBST();  // Crear una nueva instancia de BST
 }
 
+int filter(const struct dirent *entry) {
+    // Esta función de filtro se usará con scandir para listar solo los archivos .txt
+    return strstr(entry->d_name, ".txt") != NULL;
+}
 
 void load_document(const char *file_path) {
+    printf("Cargando documento: %s\n", file_path);  // Agrega esta línea
     FILE *file_ptr = fopen(file_path, "r");
     if (file_ptr == NULL) {
         perror("Error al abrir el archivo");
+        printf("No se pudo abrir el archivo: %s\n", file_path);  // Agregar mensaje de depuración
         return;
     }
 
@@ -42,10 +48,10 @@ void load_document(const char *file_path) {
         }
     }
 
-    // Verificar si se encontró el título
+    // Si no encontramos el título, cerramos el archivo y retornamos
     if (doc.title == NULL) {
         fprintf(stderr, "Error al leer el título del documento\n");
-        fclose(file_ptr);  // Asegúrate de cerrar el archivo
+        fclose(file_ptr);
         return;
     }
 
@@ -63,33 +69,35 @@ void load_document(const char *file_path) {
     global_bst->root = insert(global_bst->root, doc);
 
     // Mensaje de depuración para confirmar que el documento se cargó correctamente
-    printf("Documento cargado: %s (Palabras: %d, Caracteres: %d)\n", doc.title, doc.word_count, doc.char_count);
+    printf("Documento cargado: %s (Palabras: %d, Caracteres: %d)\n", doc.title, doc.word_count, doc.char_count);  // Esta línea ya estaba, pero es útil para la depuración
 
     fclose(file_ptr);
+    printf("Documento procesado: %s\n", file_path);  // Agrega esta línea
 }
 
 
 void load_all_documents(const char *directory_path) {
-    DIR *dir = opendir(directory_path);
-    if (dir == NULL) {
-        perror("Error al abrir el directorio");
+    printf("Entrando a load_all_documents\n");  // Agrega esta línea
+    struct dirent **namelist;
+    int n;
+
+    n = scandir(directory_path, &namelist, filter, alphasort);
+    if (n == -1) {
+        perror("Error al listar los archivos del directorio");
         return;
     }
 
-    struct dirent *entry;
-    while ((entry = readdir(dir)) != NULL) {
-        // Verificar si la entrada es un archivo regular y tiene extensión .txt
-        if (entry->d_type == DT_REG && strstr(entry->d_name, ".txt") != NULL) {
-            char file_path[1024];
-            snprintf(file_path, sizeof(file_path), "%s/%s", directory_path, entry->d_name);
-            printf("Cargando documento desde: %s\n", file_path);
-            load_document(file_path);
-        } else {
-            printf("Entrada no procesada: %s (no es un archivo regular o no tiene extensión .txt)\n", entry->d_name);
-        }
-    }
+    printf("scandir encontró %d archivos .txt\n", n);  // Esta línea ya estaba, pero es útil para la depuración
 
-    closedir(dir);
+    for (int i = 0; i < n; i++) {
+        char file_path[1024];
+        snprintf(file_path, sizeof(file_path), "%s/%s", directory_path, namelist[i]->d_name);
+        printf("Procesando archivo: %s\n", file_path);  // Esta línea ya estaba, pero es útil para la depuración
+        load_document(file_path);
+        free(namelist[i]);  // Liberar la memoria asignada por scandir
+    }
+    free(namelist);  // Liberar la lista de nombres
+    printf("Saliendo de load_all_documents\n");  // Agrega esta línea
 }
 
 void display_documents() {

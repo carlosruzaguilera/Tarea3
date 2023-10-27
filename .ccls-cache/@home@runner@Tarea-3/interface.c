@@ -3,6 +3,7 @@
 #include "searching.h"
 #include "analysis.h"
 #include <stdio.h>
+#include <string.h>
 
 void handleUserInput(BST *docTree) {
     int choice;
